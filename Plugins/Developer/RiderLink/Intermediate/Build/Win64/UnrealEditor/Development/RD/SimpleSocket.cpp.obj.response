@@ -45,7 +45,9 @@ T:\GitHub\TLActionRoguelike\Plugins\Developer\RiderLink\Source\RD\thirdparty\cls
 /source-charset:utf-8
 /execution-charset:utf-8
 /Ob2
-/Od
+/Ox
+/Ot
+/GF
 /errorReport:prompt
 /EHsc
 /DPLATFORM_EXCEPTIONS_DISABLED=0
@@ -53,6 +55,7 @@ T:\GitHub\TLActionRoguelike\Plugins\Developer\RiderLink\Source\RD\thirdparty\cls
 /MD
 /bigobj
 /fp:fast
+/Zo
 /Zp8
 /wd4456
 /wd4458
