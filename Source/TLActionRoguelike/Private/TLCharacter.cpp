@@ -3,6 +3,8 @@
 
 #include "TLCharacter.h"
 
+#include "SInteractionComponent.h"
+#include "TimerManager.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -21,6 +23,10 @@ ATLCharacter::ATLCharacter()
 	
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraArmComp");
 	CameraComp->SetupAttachment(SpringArmComp);
+
+	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
+
+	
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -56,6 +62,21 @@ void ATLCharacter::MoveRight(float value)
 
 void ATLCharacter::PrimaryAttack()
 {
+	PlayAnimMontage(AttackAnim);
+
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ATLCharacter::PrimaryAttack_TimeElapsed, 0.2f);
+}
+
+void ATLCharacter::PrimaryInteract()
+{
+	if (InteractionComp)
+	{
+		InteractionComp->PrimaryInteract();
+	}
+}
+
+void ATLCharacter::PrimaryAttack_TimeElapsed()
+{
 	const FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 	const FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
 
@@ -84,5 +105,6 @@ void ATLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ATLCharacter::PrimaryAttack);
+	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &ATLCharacter::PrimaryInteract);
 }
 
