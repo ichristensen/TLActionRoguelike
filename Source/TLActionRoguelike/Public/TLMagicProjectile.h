@@ -15,18 +15,21 @@ class TLACTIONROGUELIKE_API ATLMagicProjectile : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
+public:
+	UFUNCTION(BlueprintCallable)
+	void OnComponentBeginOverlap(UPrimitiveComponent* PrimitiveComponent, AActor* Actor, UPrimitiveComponent* PrimitiveComponent1, int I, bool bArg,
+	                             const FHitResult& HitResult);
 	// Sets default values for this actor's properties
 	ATLMagicProjectile();
 
 protected:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* SphereComp;
 	
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UProjectileMovementComponent* ProjectileMovementComp;
 	
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UParticleSystemComponent* ParticleSystemComp;
 	
 	// Called when the game starts or when spawned
