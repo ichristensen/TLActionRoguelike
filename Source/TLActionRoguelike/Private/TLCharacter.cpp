@@ -11,6 +11,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/PlayerController.h"
 
 // Sets default values
 ATLCharacter::ATLCharacter()
@@ -34,6 +35,8 @@ ATLCharacter::ATLCharacter()
 	bUseControllerRotationYaw = false;
 
 	AttackAnimDelay = 0.2f;
+
+	TimeToHitParamName = "TimeToHit";
 }
 
 // Called when the game starts or when spawned
@@ -151,6 +154,28 @@ void ATLCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 	
 }
 
+void ATLCharacter::OnHealthChanged(AActor* InstigatorActor, UAttributeComponent* OwningComp, float NewHealth,
+	float Delta)
+{
+	if(Delta < 0.0f)
+	{
+		GetMesh()->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
+	}
+	
+	if((NewHealth <= 0.0f) && (Delta < 0.0f))
+	{
+		APlayerController* PC = Cast<APlayerController>(GetController());
+		DisableInput(PC);
+	}
+}
+
+void ATLCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	AttributeComp->OnHealthChanged.AddDynamic(this, &ATLCharacter::OnHealthChanged);
+}
+
 // Called to bind functionality to input
 void ATLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -168,5 +193,10 @@ void ATLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ATLCharacter::Dash);
+}
+
+void ATLCharacter::HealSelf(float Amount)
+{
+	AttributeComp->ApplyHealthChange(this, Amount);
 }
 

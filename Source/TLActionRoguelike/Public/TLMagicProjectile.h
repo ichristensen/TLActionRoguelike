@@ -3,15 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "TLProjectileBase.h"
 #include "TLMagicProjectile.generated.h"
 
-class USphereComponent;
-class UProjectileMovementComponent;
-class UParticleSystemComponent;
+class UAudioComponent;
 
 UCLASS()
-class TLACTIONROGUELIKE_API ATLMagicProjectile : public AActor
+class TLACTIONROGUELIKE_API ATLMagicProjectile : public ATLProjectileBase
 {
 	GENERATED_BODY()
 	
@@ -23,20 +21,7 @@ public:
 	ATLMagicProjectile();
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USphereComponent* SphereComp;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UProjectileMovementComponent* ProjectileMovementComp;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UParticleSystemComponent* ParticleSystemComp;
-	
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Damage;
 };

@@ -21,6 +21,9 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
 	float Health;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+	float HealthMax;
 
 public:
 
@@ -28,6 +31,17 @@ public:
 	FOnHealthChanged OnHealthChanged;
 	
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
-	bool ApplyHealthChange(float Delta);
-		
+	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
+	
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	bool IsAlive() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	static UAttributeComponent* GetAttributes(AActor* FromActor);
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes", meta=(DisplayName = "IsAlive"))
+	static bool IsActorAlive(AActor* Actor);
+
+	UFUNCTION(BlueprintCallable)
+	bool Kill(AActor* InstigatorActor);
 };

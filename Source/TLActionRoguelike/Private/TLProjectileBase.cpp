@@ -1,5 +1,7 @@
 #include "TLProjectileBase.h"
 
+#include "AssetTypeCategories.h"
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -20,14 +22,20 @@ ATLProjectileBase::ATLProjectileBase()
 	ProjectileMovementComp->bRotationFollowsVelocity = true;
 	ProjectileMovementComp->bInitialVelocityInLocalSpace = true;
 	ProjectileMovementComp->ProjectileGravityScale = 0.0f;
-	ProjectileMovementComp->InitialSpeed = 8000;
+	ProjectileMovementComp->InitialSpeed = 800;
+	
+	AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
+	AudioComp->SetupAttachment(RootComponent);
 }
 
 void ATLProjectileBase::Explode_Implementation()
 {
 	if (ensure(!IsValid(this)))
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVFX, GetActorLocation(), GetActorRotation());
+		const FVector Location = GetActorLocation();
+		const FRotator Rotation = GetActorRotation();
+		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVFX, Location, Rotation);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundBase, Location, Rotation);
 		Destroy();
 	}
 }

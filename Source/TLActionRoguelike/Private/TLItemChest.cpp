@@ -22,19 +22,6 @@ ATLItemChest::ATLItemChest()
 
 	LidMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LidMeshComp"));
 	LidMeshComp->SetupAttachment(BaseMeshComp);
+
+	TargetPitch = 110;
 }
-
-// Called when the game starts or when spawned
-void ATLItemChest::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ATLItemChest::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

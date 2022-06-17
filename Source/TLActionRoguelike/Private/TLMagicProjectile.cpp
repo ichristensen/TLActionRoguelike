@@ -5,7 +5,6 @@
 
 #include "AttributeComponent.h"
 #include "Components/SphereComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 
 void ATLMagicProjectile::OnComponentBeginOverlap(UPrimitiveComponent* PrimitiveComponent, AActor* Actor,
@@ -16,8 +15,8 @@ void ATLMagicProjectile::OnComponentBeginOverlap(UPrimitiveComponent* PrimitiveC
 		UAttributeComponent* AttributeComp = Cast<UAttributeComponent>(Actor->GetComponentByClass(UAttributeComponent::StaticClass()));
 		if(AttributeComp)
 		{
-			AttributeComp->ApplyHealthChange(-20.0f);
-			Destroy();
+			AttributeComp->ApplyHealthChange(GetInstigator(), -Damage);
+			//Destroy();
 		}
 	}
 }
@@ -27,32 +26,8 @@ ATLMagicProjectile::ATLMagicProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
-	SphereComp->SetCollisionProfileName("Projectile");
-	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ATLMagicProjectile::OnComponentBeginOverlap);
-	RootComponent = SphereComp;
-
-	ParticleSystemComp = CreateDefaultSubobject<UParticleSystemComponent>("ParticleSystemComp");
-	ParticleSystemComp->SetupAttachment(SphereComp);
-
-	ProjectileMovementComp = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComp");
-	ProjectileMovementComp->InitialSpeed = 1000.0f;
-	ProjectileMovementComp->bRotationFollowsVelocity = true;
-	ProjectileMovementComp->bInitialVelocityInLocalSpace = true;
-}
-
-// Called when the game starts or when spawned
-void ATLMagicProjectile::BeginPlay()
-{
-	Super::BeginPlay();
 	
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ATLMagicProjectile::OnComponentBeginOverlap);
+
+	Damage = 20;
 }
-
-// Called every frame
-void ATLMagicProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

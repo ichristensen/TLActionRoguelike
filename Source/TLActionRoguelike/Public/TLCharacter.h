@@ -53,6 +53,9 @@ protected:
 
 	float AttackAnimDelay;
 	
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	FName TimeToHitParamName;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -66,9 +69,16 @@ protected:
 	void BlackHoleAttack();
 	void BlackHoleAttack_TimeElapsed();
 	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
+	
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigatorActor, UAttributeComponent* OwningComp, float NewHealth, float Delta);
+
+	virtual void PostInitializeComponents() override;
 
 public:	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(Exec)
+	void HealSelf(float Amount=100.0f);
 };

@@ -22,7 +22,6 @@ public:
 	float TargetPitch;
 	
 	void Interact_Implementation(APawn* InstigatorPawn) override;
-	
 
 protected:
 	
@@ -31,12 +30,4 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* LidMeshComp;
-	
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 };
