@@ -35,6 +35,12 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool IsAlive() const;
+	
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	float GetHealth() const;
+	
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	float GetHealthMax() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	static UAttributeComponent* GetAttributes(AActor* FromActor);

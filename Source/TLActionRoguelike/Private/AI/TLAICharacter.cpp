@@ -6,10 +6,11 @@
 #include "AIController.h"
 #include "AttributeComponent.h"
 #include "BrainComponent.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "Components/SkeletalMeshComponent.h"
-#include "DrawDebugHelpers.h"
 #include "TLWorldUserWidget.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
 void ATLAICharacter::SetTargetActor(AActor* Actor)
@@ -56,6 +57,9 @@ void ATLAICharacter::OnHealthChanged(AActor* InstigatorActor, UAttributeComponen
 			GetMesh()->SetAllBodiesSimulatePhysics(true);
 			GetMesh()->SetCollisionProfileName("Ragdoll");
 			
+			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			GetCharacterMovement()->DisableMovement();
+			
 			SetLifeSpan(10.0f);
 		}
 	}
@@ -79,6 +83,9 @@ ATLAICharacter::ATLAICharacter()
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComp");
 	AttributeComp = CreateDefaultSubobject<UAttributeComponent>("AttributeComp");
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
+	GetMesh()->SetGenerateOverlapEvents(true);
 	
 	TimeToHitParamName = "TimeToHit";
 }

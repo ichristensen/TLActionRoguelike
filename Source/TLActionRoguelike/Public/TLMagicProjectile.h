@@ -14,10 +14,9 @@ class TLACTIONROGUELIKE_API ATLMagicProjectile : public ATLProjectileBase
 	GENERATED_BODY()
 	
 public:
-	UFUNCTION(BlueprintCallable)
-	void OnComponentBeginOverlap(UPrimitiveComponent* PrimitiveComponent, AActor* Actor, UPrimitiveComponent* PrimitiveComponent1, int I, bool bArg,
-	                             const FHitResult& HitResult);
-	// Sets default values for this actor's properties
+	UFUNCTION()
+	virtual void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
+	
 	ATLMagicProjectile();
 
 protected:

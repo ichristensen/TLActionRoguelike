@@ -4,30 +4,33 @@
 #include "TLMagicProjectile.h"
 
 #include "AttributeComponent.h"
-#include "Components/SphereComponent.h"
+#include "TLFunctionLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
 
-void ATLMagicProjectile::OnComponentBeginOverlap(UPrimitiveComponent* PrimitiveComponent, AActor* Actor,
-	UPrimitiveComponent* PrimitiveComponent1, int I, bool bArg, const FHitResult& HitResult)
-{
-	if(Actor && (Actor != GetInstigator()))
-	{
-		UAttributeComponent* AttributeComp = Cast<UAttributeComponent>(Actor->GetComponentByClass(UAttributeComponent::StaticClass()));
-		if(AttributeComp)
-		{
-			AttributeComp->ApplyHealthChange(GetInstigator(), -Damage);
-			//Destroy();
-		}
-	}
-}
-
-// Sets default values
 ATLMagicProjectile::ATLMagicProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-	
-	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ATLMagicProjectile::OnComponentBeginOverlap);
-
 	Damage = 20;
+}
+
+void ATLMagicProjectile::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	// UE_LOG(LogTemp, Log, TEXT("ATLMagicProjectile::OnActorHit"));
+	if(OtherActor == GetInstigator())
+	{
+		// UE_LOG(LogTemp, Log, TEXT("Hit Self - exiting"));
+		return;
+	}
+
+	UTLFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, Damage, Hit);
+
+	// if(OtherActor && (OtherActor != GetInstigator()))
+	// {
+	// 	UAttributeComponent* AttributeComp = Cast<UAttributeComponent>(OtherActor->GetComponentByClass(UAttributeComponent::StaticClass()));
+	// 	if(AttributeComp)
+	// 	{
+	// 		AttributeComp->ApplyHealthChange(GetInstigator(), -Damage);
+	// 	}
+	// }
+	Super::OnActorHit(HitComponent, OtherActor, OtherComp, NormalImpulse, Hit);
 }

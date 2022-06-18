@@ -41,8 +41,14 @@ protected:
 	UFUNCTION()
 	void SpawnBotTimerElapsed();
 	
+	UFUNCTION()
+	void RespawnPlayerElapsed(AController* Controller);
+	
 public:
 	ATLActionRoguelikeGameModeBase();
+	
+	UFUNCTION()
+	virtual void OnActorKilled(AActor* VictimActor, AActor* KillerActor);
 	
 	virtual void StartPlay() override;
 

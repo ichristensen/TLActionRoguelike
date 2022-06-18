@@ -83,15 +83,6 @@ void ATLCharacter::PrimaryInteract()
 
 void ATLCharacter::PrimaryAttack_TimeElapsed()
 {
-	/*const FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	const FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
-
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParams.Instigator = this;
-	
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
-	*/
 	SpawnProjectile(ProjectileClass);
 }
 
@@ -139,7 +130,7 @@ void ATLCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 		ObjParams.AddObjectTypesToQuery(ECC_Pawn);
 
 		FVector TraceStart = CameraComp->GetComponentLocation();
-		FVector TraceEnd = TraceStart + (GetControlRotation().Vector() * 5000);
+		FVector TraceEnd = TraceStart + (CameraComp->GetForwardVector() * 5000);
 
 		FHitResult Hit;
 		if (GetWorld()->SweepSingleByObjectType(Hit, TraceStart, TraceEnd, FQuat::Identity, ObjParams, Shape, Params))
@@ -174,6 +165,11 @@ void ATLCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	AttributeComp->OnHealthChanged.AddDynamic(this, &ATLCharacter::OnHealthChanged);
+}
+
+FVector ATLCharacter::GetPawnViewLocation() const
+{
+	return CameraComp->GetComponentLocation();
 }
 
 // Called to bind functionality to input

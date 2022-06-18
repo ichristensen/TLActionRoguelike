@@ -44,8 +44,9 @@ protected:
 
 	virtual void PostInitializeComponents() override;
 	
-public:	
-	// Sets default values for this actor's properties
+public:
+	UFUNCTION()
+	void OnBeginOverlap(UPrimitiveComponent* PrimitiveComponent, AActor* Actor, UPrimitiveComponent* PrimitiveComponent1, int I, bool bArg, const FHitResult& HitResult);
+	
 	ATLProjectileBase();
-
 };

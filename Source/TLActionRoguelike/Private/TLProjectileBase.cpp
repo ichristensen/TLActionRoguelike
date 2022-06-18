@@ -1,6 +1,6 @@
 #include "TLProjectileBase.h"
 
-#include "AssetTypeCategories.h"
+#include "TLBTTask_HealSelf.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -13,6 +13,8 @@ ATLProjectileBase::ATLProjectileBase()
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
 	SphereComp->SetCollisionProfileName("Projectile");
 	SphereComp->OnComponentHit.AddDynamic(this, &ATLProjectileBase::OnActorHit);
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ATLProjectileBase::OnBeginOverlap);
+	SphereComp->IgnoreActorWhenMoving(GetInstigator(), true);
 	RootComponent = SphereComp;
 
 	ParticleSystemComp = CreateDefaultSubobject<UParticleSystemComponent>("ParticleSystemComp");
@@ -30,7 +32,7 @@ ATLProjectileBase::ATLProjectileBase()
 
 void ATLProjectileBase::Explode_Implementation()
 {
-	if (ensure(!IsValid(this)))
+	if (ensure(IsValid(this)))
 	{
 		const FVector Location = GetActorLocation();
 		const FRotator Rotation = GetActorRotation();
@@ -43,11 +45,22 @@ void ATLProjectileBase::Explode_Implementation()
 void ATLProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	UE_LOG(LogTemp, Log, TEXT("ATLProjectileBase::OnActorHit"));
+	Explode();
+}
+
+void ATLProjectileBase::OnBeginOverlap(UPrimitiveComponent* PrimitiveComponent, AActor* Actor,
+	UPrimitiveComponent* PrimitiveComponent1, int I, bool bArg, const FHitResult& HitResult)
+{
+	UE_LOG(LogTemp, Log, TEXT("ATLProjectileBase::OnBeginOverlap"));
 	Explode();
 }
 
 void ATLProjectileBase::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	SetLifeSpan(4.0f);
 }
+
 
