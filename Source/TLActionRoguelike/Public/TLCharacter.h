@@ -11,6 +11,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class USInteractionComponent;
 class UAttributeComponent;
+class UTLActionComponent;
 
 UCLASS()
 class TLACTIONROGUELIKE_API ATLCharacter : public ACharacter
@@ -46,6 +47,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="Attribute")
 	UAttributeComponent* AttributeComp;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="Action")
+	UTLActionComponent* ActionComp;
 
 	FTimerHandle TimerHandle_PrimaryAttack;
 	FTimerHandle TimerHandle_Dash;
@@ -68,6 +72,8 @@ protected:
 	void Dash_TimeElapsed();
 	void BlackHoleAttack();
 	void BlackHoleAttack_TimeElapsed();
+	void SprintStart();
+	void SprintStop();
 	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
 	
 	UFUNCTION()

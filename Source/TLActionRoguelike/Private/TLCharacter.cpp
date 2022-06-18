@@ -4,6 +4,7 @@
 #include "TLCharacter.h"
 
 #include "SInteractionComponent.h"
+#include "TLActionComponent.h"
 #include "AttributeComponent.h"
 #include "TimerManager.h"
 #include "Camera/CameraComponent.h"
@@ -27,8 +28,9 @@ ATLCharacter::ATLCharacter()
 	CameraComp->SetupAttachment(SpringArmComp);
 
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
-	
 	AttributeComp = CreateDefaultSubobject<UAttributeComponent>("AttributeComp");
+	ActionComp = CreateDefaultSubobject<UTLActionComponent>("ActionComp");
+	
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -106,6 +108,16 @@ void ATLCharacter::BlackHoleAttack()
 void ATLCharacter::BlackHoleAttack_TimeElapsed()
 {
 	SpawnProjectile(BlackHoleProjectileClass);
+}
+
+void ATLCharacter::SprintStart()
+{
+	ActionComp->StartActionByName(this, "Sprint");
+}
+
+void ATLCharacter::SprintStop()
+{
+	ActionComp->StopActionByName(this, "Sprint");
 }
 
 void ATLCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
@@ -189,6 +201,9 @@ void ATLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ATLCharacter::Dash);
+	
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ATLCharacter::SprintStart);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ATLCharacter::SprintStop);
 }
 
 void ATLCharacter::HealSelf(float Amount)
