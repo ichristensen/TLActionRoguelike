@@ -24,18 +24,6 @@ public:
 
 protected:
 	
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	UAnimMontage* AttackAnim;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> ProjectileClass;
-	
-	UPROPERTY(EditAnywhere, Category ="Attack")
-	TSubclassOf<AActor> DashProjectileClass;
-	
-	UPROPERTY(EditAnywhere, Category ="Attack")
-	TSubclassOf<AActor> BlackHoleProjectileClass;
-
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
 	
@@ -51,30 +39,19 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="Action")
 	UTLActionComponent* ActionComp;
 
-	FTimerHandle TimerHandle_PrimaryAttack;
-	FTimerHandle TimerHandle_Dash;
-	FTimerHandle TimerHandle_BlackHole;
-
-	float AttackAnimDelay;
-	
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	FName TimeToHitParamName;
 
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	void MoveForward(float value);
 	void MoveRight(float value);
 	void PrimaryAttack();
 	void PrimaryInteract();
-	void PrimaryAttack_TimeElapsed();
 	void Dash();
-	void Dash_TimeElapsed();
 	void BlackHoleAttack();
-	void BlackHoleAttack_TimeElapsed();
 	void SprintStart();
 	void SprintStop();
-	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
 	
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, UAttributeComponent* OwningComp, float NewHealth, float Delta);

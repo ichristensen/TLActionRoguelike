@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "AttributeComponent.h"
 #include "BrainComponent.h"
+#include "TLActionComponent.h"
 #include "TLWorldUserWidget.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -82,6 +83,7 @@ ATLAICharacter::ATLAICharacter()
 {
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComp");
 	AttributeComp = CreateDefaultSubobject<UAttributeComponent>("AttributeComp");
+	ActionComp = CreateDefaultSubobject<UTLActionComponent>("ActionComp");
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);

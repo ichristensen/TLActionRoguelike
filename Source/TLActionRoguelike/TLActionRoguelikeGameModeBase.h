@@ -33,7 +33,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	UCurveFloat* DifficultyCurve;
 	
+	UPROPERTY(EditDefaultsOnly, Category="Credits")
+	int CreditsPerKill;
+	
 	FTimerHandle TimerHandle_SpawnBots;
+	
 
 	UFUNCTION()
 	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);

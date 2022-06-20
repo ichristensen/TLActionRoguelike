@@ -3,34 +3,46 @@
 
 #include "TLMagicProjectile.h"
 
-#include "AttributeComponent.h"
+#include "TLActionComponent.h"
+#include "TLActionEffect.h"
 #include "TLFunctionLibrary.h"
+#include "Components/SphereComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 
 ATLMagicProjectile::ATLMagicProjectile()
 {
+	SphereComp->SetSphereRadius(20.0f);
 	Damage = 20;
 }
 
-void ATLMagicProjectile::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void ATLMagicProjectile::PostInitializeComponents()
 {
-	// UE_LOG(LogTemp, Log, TEXT("ATLMagicProjectile::OnActorHit"));
-	if(OtherActor == GetInstigator())
+	Super::PostInitializeComponents();
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ATLMagicProjectile::OnActorOverlap);
+	
+}
+
+void ATLMagicProjectile::OnActorOverlap(UPrimitiveComponent* PrimitiveComponent, AActor* Actor,
+                                        UPrimitiveComponent* PrimitiveComponent1, int I, bool bArg, const FHitResult& HitResult)
+{
+	if(Actor && Actor == GetInstigator())
 	{
-		// UE_LOG(LogTemp, Log, TEXT("Hit Self - exiting"));
 		return;
 	}
-
-	UTLFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, Damage, Hit);
-
-	// if(OtherActor && (OtherActor != GetInstigator()))
-	// {
-	// 	UAttributeComponent* AttributeComp = Cast<UAttributeComponent>(OtherActor->GetComponentByClass(UAttributeComponent::StaticClass()));
-	// 	if(AttributeComp)
-	// 	{
-	// 		AttributeComp->ApplyHealthChange(GetInstigator(), -Damage);
-	// 	}
-	// }
-	Super::OnActorHit(HitComponent, OtherActor, OtherComp, NormalImpulse, Hit);
+	
+	if(Actor)
+	{
+		UTLActionComponent* ActionComp = Cast<UTLActionComponent>(Actor->GetComponentByClass(UTLActionComponent::StaticClass()));
+		if(ActionComp && ActionComp->ActiveGameplayTags.HasTag(ParryTag))
+		{
+			ProjectileMovementComp->Velocity = -ProjectileMovementComp->Velocity;
+			SetInstigator(Cast<APawn>(Actor));
+			return;
+		}
+		
+		UTLFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), Actor, Damage, HitResult);
+		ActionComp->AddActions(GetInstigator(), BurningActionClass);
+	}
+	Explode();
 }

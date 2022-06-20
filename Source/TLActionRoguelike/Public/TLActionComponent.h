@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "TLAction.h"
+#include "TLActionEffect.h"
 #include "Components/ActorComponent.h"
 #include "TLActionComponent.generated.h"
 
@@ -14,16 +16,29 @@ class TLACTIONROGUELIKE_API UTLActionComponent : public UActorComponent
 {
 	GENERATED_BODY()
 protected:
+	virtual void BeginPlay() override;
+	
 	UPROPERTY()
-	TArray<UTLAction*> Actions; 
+	TArray<UTLAction*> Actions;
+
+	UPROPERTY(EditAnywhere, Category="Actions")
+	TArray<TSubclassOf<UTLAction>> DefaultActions;
+
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
 	UFUNCTION(BlueprintCallable, Category="Actions")
-	void AddActions(TSubclassOf<UTLAction> ActionClass);
+	void AddActions(AActor* Instigator, TSubclassOf<UTLAction> ActionClass);
 	
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	bool StartActionByName(AActor* Instigator, FName ActionName);
 	
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	bool StopActionByName(AActor* Instigator, FName ActionName);
+	
+	UFUNCTION(BlueprintCallable, Category="Actions")
+	void RemoveAction(UTLAction* Action);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Tags")
+	FGameplayTagContainer ActiveGameplayTags;
 };

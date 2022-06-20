@@ -11,6 +11,7 @@ class UTLWorldUserWidget;
 class UAttributeComponent;
 class UPawnSensingComponent;
 class UUserWidget;
+class UTLActionComponent;
 
 UCLASS()
 class TLACTIONROGUELIKE_API ATLAICharacter : public ACharacter
@@ -26,6 +27,9 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UAttributeComponent* AttributeComp;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UTLActionComponent* ActionComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;

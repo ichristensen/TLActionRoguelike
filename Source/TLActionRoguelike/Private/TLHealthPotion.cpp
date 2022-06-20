@@ -6,6 +6,7 @@
 #include "AttributeComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
+#include "TLPlayerState.h"
 
 void ATLHealthPotion::CooldownComplete()
 {
@@ -21,20 +22,25 @@ ATLHealthPotion::ATLHealthPotion()
 	
 	HealAmount = 50;
 	CooldownTime = 10;
+	CreditsCost = 50;
 }
 
 void ATLHealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 {
 	ISGameplayInterface::Interact_Implementation(InstigatorPawn);
 
-	RootComponent->SetVisibility(false);
-	SetActorEnableCollision(false);
-	
-	GetWorldTimerManager().ClearTimer(TimerHandle_Cooldown);
-	GetWorldTimerManager().SetTimer(TimerHandle_Cooldown, this, &ATLHealthPotion::CooldownComplete, CooldownTime, false);
-	
 	if(UAttributeComponent* AttributeComponent = Cast<UAttributeComponent>(InstigatorPawn->GetComponentByClass(UAttributeComponent::StaticClass())))
 	{
-		AttributeComponent->ApplyHealthChange(this, HealAmount);
+		if(ATLPlayerState* PS = InstigatorPawn->GetPlayerState<ATLPlayerState>())
+		{
+			if(PS->RemoveCredits(CreditsCost))
+			{
+				AttributeComponent->ApplyHealthChange(this, HealAmount);
+				RootComponent->SetVisibility(false);
+				SetActorEnableCollision(false);
+				GetWorldTimerManager().ClearTimer(TimerHandle_Cooldown);
+				GetWorldTimerManager().SetTimer(TimerHandle_Cooldown, this, &ATLHealthPotion::CooldownComplete, CooldownTime, false);
+			}
+		}
 	}
 }

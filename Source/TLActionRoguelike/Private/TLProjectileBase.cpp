@@ -13,7 +13,6 @@ ATLProjectileBase::ATLProjectileBase()
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
 	SphereComp->SetCollisionProfileName("Projectile");
 	SphereComp->OnComponentHit.AddDynamic(this, &ATLProjectileBase::OnActorHit);
-	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ATLProjectileBase::OnBeginOverlap);
 	SphereComp->IgnoreActorWhenMoving(GetInstigator(), true);
 	RootComponent = SphereComp;
 
@@ -38,6 +37,9 @@ void ATLProjectileBase::Explode_Implementation()
 		const FRotator Rotation = GetActorRotation();
 		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVFX, Location, Rotation);
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundBase, Location, Rotation);
+		
+		//UGameplayStatics::PlayWorldCameraShake(this, ImpactShake, GetActorLocation(), ImpactShakeInnerRadius, ImpactShakeOuterRadius);
+
 		Destroy();
 	}
 }
@@ -46,13 +48,6 @@ void ATLProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* Ot
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(LogTemp, Log, TEXT("ATLProjectileBase::OnActorHit"));
-	Explode();
-}
-
-void ATLProjectileBase::OnBeginOverlap(UPrimitiveComponent* PrimitiveComponent, AActor* Actor,
-	UPrimitiveComponent* PrimitiveComponent1, int I, bool bArg, const FHitResult& HitResult)
-{
-	UE_LOG(LogTemp, Log, TEXT("ATLProjectileBase::OnBeginOverlap"));
 	Explode();
 }
 

@@ -10,6 +10,7 @@
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "EnvironmentQuery/EnvQueryInstanceBlueprintWrapper.h"
 #include "TimerManager.h"
+#include "TLPlayerState.h"
 #include "AI/TLAICharacter.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("tl.SpawnBots"), true, TEXT("Enable Spawning of bots via timer."), ECVF_Cheat);
@@ -17,12 +18,16 @@ static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("tl.SpawnBots"), true, TEXT
 ATLActionRoguelikeGameModeBase::ATLActionRoguelikeGameModeBase()
 {
 	SpawnTimerInterval = 2.0f;
+
+	CreditsPerKill = 20;
+	PlayerStateClass = ATLPlayerState::StaticClass();
 }
 
 void ATLActionRoguelikeGameModeBase::OnActorKilled(AActor* VictimActor, AActor* KillerActor)
 {
-	ACharacter* Player = Cast<ACharacter>(VictimActor);
-	if(Player)
+	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(VictimActor), *GetNameSafe(KillerActor));
+
+	if(ACharacter* Player = Cast<ACharacter>(VictimActor))
 	{
 		FTimerHandle TimerHandle_RespawnDelay;
 		FTimerDelegate Delegate;
@@ -31,7 +36,14 @@ void ATLActionRoguelikeGameModeBase::OnActorKilled(AActor* VictimActor, AActor* 
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, RespawnDelay, false);
 		UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Starting Respawn"));
 	}
-	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(VictimActor), *GetNameSafe(KillerActor));
+
+	if(APawn* KillerPawn = Cast<APawn>(KillerActor))
+	{
+		if(ATLPlayerState* PS = KillerPawn->GetPlayerState<ATLPlayerState>())
+		{
+			PS->AddCredits(CreditsPerKill);
+		}
+	}
 }
 
 void ATLActionRoguelikeGameModeBase::StartPlay()

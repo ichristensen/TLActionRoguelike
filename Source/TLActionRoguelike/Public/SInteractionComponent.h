@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "TLWorldUserWidget.h"
 #include "Components/ActorComponent.h"
 #include "SInteractionComponent.generated.h"
 
@@ -17,8 +18,26 @@ public:
 	USInteractionComponent();
 
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+
+	void FindBestInteractable();
+
+	UPROPERTY()
+	AActor* FocusedActor;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UTLWorldUserWidget> DefaultWidgetClass;
+
+	UPROPERTY()
+	UTLWorldUserWidget* DefaultWidgetInstance;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Trace")
+	float TraceDistance;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Trace")
+	float TraceRadius;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Trace")
+	TEnumAsByte<ECollisionChannel> CollisionChannel;
 
 public:	
 	// Called every frame

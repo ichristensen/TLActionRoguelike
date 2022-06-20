@@ -21,6 +21,9 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere)
 	float CooldownTime;
+	
+	UPROPERTY(VisibleAnywhere)
+	uint32 CreditsCost;
 
 	FTimerHandle TimerHandle_Cooldown;
 
